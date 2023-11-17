@@ -1,7 +1,7 @@
 name: Run Soccer Script
 
 on:
-workflow_dispatch:
+  workflow_dispatch:
   schedule:
     # Schedule for 08:01 AM UTC. Change '08:01' to your preferred time.
     - cron:  '1 8 * * *'

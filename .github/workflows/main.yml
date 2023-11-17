@@ -1,0 +1,29 @@
+name: Run Soccer Script
+
+on:
+  schedule:
+    # Schedule for 11:01 AM UTC. Change '11:01' to your preferred time.
+    - cron:  '1 11 * * *'
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out repository code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'  # Set up the Python version you need
+
+    - name: Install dependencies
+      run: |
+        pip install requests  # Install any dependencies your script may have
+
+    - name: Run the script
+      run: python mac_bildirimi.py 
+      env:
+        IFTTT_API_KEY: ${{ secrets.IFTTT_API_KEY }}
+        RAPID_API_KEY: ${{ secrets.RAPID_API_KEY }}

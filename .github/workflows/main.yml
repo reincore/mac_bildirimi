@@ -3,7 +3,7 @@ name: Run Soccer Script
 on:
   schedule:
     # Schedule for 11:01 AM UTC. Change '11:01' to your preferred time.
-    - cron:  '1 11 * * *'
+    - cron:  '1 8 * * *'
 
 jobs:
   run-script:

@@ -2,24 +2,15 @@ import requests
 from datetime import datetime
 import os
 
-def trigger_ifttt_webhook(event, value1, value2, value3):
+def trigger_ifttt_webhook(event, home_team, away_team, venue_name):
     url = f"https://maker.ifttt.com/trigger/{event}/with/key/{os.environ['IFTTT_API_KEY']}"
+    payload = {"value1": home_team, "value2": away_team, "value3": venue_name}
+    headers = {"Content-Type": "application/json"}
 
-    payload = {
-        "value1": value1,
-        "value2": value2,
-        "value3": value3
-    }
-
-    headers = {
-        "Content-Type": "application/json"
-    }
-
-    response = requests.request("POST", url, headers=headers, data=json.dumps(payload))
-
+    response = requests.post(url, headers=headers, json=payload)
     return response.status_code == 200
 
-def check_games_for_team(fixtures, team_id):
+def check_games_for_team(fixtures, team_id, team_name):
     for fixture in fixtures:
         if fixture['HomeTeamId'] == team_id:
             home_team = fixture['HomeTeamName']
@@ -27,34 +18,35 @@ def check_games_for_team(fixtures, team_id):
             venue_name = fixture['VenueName']
 
             if trigger_ifttt_webhook("mac_bildirimi", home_team, away_team, venue_name):
-                print(f"IFTTT Webhook triggered successfully for the game between {home_team} and {away_team} at {venue_name}!")
+                print(f"IFTTT Webhook triggered successfully for the game between {home_team} and {away_team} at {venue_name}.")
             else:
-                print("Failed to trigger IFTTT Webhook.")
+                print(f"Failed to trigger IFTTT Webhook for {team_name}.")
             return
-    print(f"No home game today for team ID {team_id}.")
+    print(f"No home game today for {team_name}.")
 
 def get_todays_games():
     date = datetime.now().strftime('%Y-%m-%d')
     url = f"https://api.sportsdata.io/v3/soccer/scores/json/GamesByDate/{date}"
-    headers = {
-        "Ocp-Apim-Subscription-Key": os.environ['SPORTSDATA_IO_API_KEY']
-    }
+    headers = {"Ocp-Apim-Subscription-Key": os.environ['SPORTSDATA_IO_API_KEY']}
 
     response = requests.get(url, headers=headers)
 
     if response.status_code == 200:
-        # Log the fixture data
-        print(f"Fixture obtained: {response.json()}")
         return response.json()
     else:
         print(f"Error fetching data: {response.text}")
-        return None  # Or appropriate error handling
+        return None
 
-# Main execution
-fixtures = get_todays_games()
+def main():
+    # Team ID to Name mapping
+    teams = {572: "Fenerbahçe", 728: "Beşiktaş"}
 
-fenerbahce_id = 572  # SportsData.io ID for Fenerbahçe
-besiktas_id = 728    # SportsData.io ID for Beşiktaş
+    fixtures = get_todays_games()
+    if fixtures:
+        for team_id, team_name in teams.items():
+            check_games_for_team(fixtures, team_id, team_name)
+    else:
+        print("No fixtures data available.")
 
-check_games_for_team(fixtures, fenerbahce_id)
-check_games_for_team(fixtures, besiktas_id)
+if __name__ == "__main__":
+    main()

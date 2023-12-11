@@ -25,9 +25,9 @@ def check_games_for_team(fixtures, team_info):
     print(f"No home game today for {team_name}.")
 
 def get_todays_games():
-    # date = datetime.now().strftime('%Y-%m-%d')
+    date = datetime.now().strftime('%Y-%m-%d')
     # Set to a specific date for testing
-    date = "2023-12-21"
+    # date = "2023-12-21"
     url = f"https://api.sportsdata.io/v3/soccer/scores/json/GamesByDate/{date}"
     headers = {"Ocp-Apim-Subscription-Key": os.environ['SPORTSDATA_IO_API_KEY']}
 

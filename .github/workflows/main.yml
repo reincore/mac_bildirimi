@@ -29,8 +29,10 @@ jobs:
     - name: Debug - Print secret names
       run: |
         echo "Available secrets:"
-        echo ${{ toJson(secrets) }}
-    
+        echo "RAPID_API_KEY"
+        echo "IFTTT_API_KEY"
+        echo "SPORTSDATA_IO_API_KEY"
+
     - name: Run the script
       run: python mac_bildirimi.py 
       env:

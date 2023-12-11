@@ -10,12 +10,12 @@ def trigger_ifttt_webhook(event, home_team, away_team, venue_name):
     response = requests.post(url, headers=headers, json=payload)
     return response.status_code == 200
 
-def check_games_for_team(fixtures, team_id, team_name):
+def check_games_for_team(fixtures, team_info):
+    team_id, team_name, venue_name = team_info
     for fixture in fixtures:
         if fixture['HomeTeamId'] == team_id:
             home_team = fixture.get('HomeTeamName', 'Unknown Home Team')
             away_team = fixture.get('AwayTeamName', 'Unknown Away Team')
-            venue_name = fixture.get('VenueName', 'Unknown Venue')
 
             if trigger_ifttt_webhook("mac_bildirimi", home_team, away_team, venue_name):
                 print(f"IFTTT Webhook triggered successfully for the game between {home_team} and {away_team} at {venue_name}.")
@@ -25,9 +25,7 @@ def check_games_for_team(fixtures, team_id, team_name):
     print(f"No home game today for {team_name}.")
 
 def get_todays_games():
-    # date = datetime.now().strftime('%Y-%m-%d')
-    # Set to a specific date for testing
-    date = "2023-12-17"
+    date = datetime.now().strftime('%Y-%m-%d')  # For testing: '2023-12-17'
     url = f"https://api.sportsdata.io/v3/soccer/scores/json/GamesByDate/{date}"
     headers = {"Ocp-Apim-Subscription-Key": os.environ['SPORTSDATA_IO_API_KEY']}
 
@@ -40,13 +38,17 @@ def get_todays_games():
         return None
 
 def main():
-    # Team ID to Name mapping
-    teams = {572: "Fenerbahçe", 728: "Beşiktaş"}
+    # Team ID, Name, and Venue mapping
+    teams = {
+        572: ("Fenerbahçe", "Fenerhabçe Şükrü Saraçoğlu Stadyumu"),
+        728: ("Beşiktaş", "Beşiktaş İnönü Stadyumu")
+    }
 
     fixtures = get_todays_games()
     if fixtures:
-        for team_id, team_name in teams.items():
-            check_games_for_team(fixtures, team_id, team_name)
+        for team_id, team_data in teams.items():
+            team_name, venue_name = team_data
+            check_games_for_team(fixtures, (team_id, team_name, venue_name))
     else:
         print("No fixtures data available.")
 

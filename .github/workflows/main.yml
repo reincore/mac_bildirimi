@@ -12,10 +12,10 @@ jobs:
 
     steps:
     - name: Check out repository code
-      uses: actions/checkout@v2
+      uses: actions/checkout@latest 
 
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@latest 
       with:
         python-version: '3.x'  # Set up the Python version you need
 
@@ -28,3 +28,4 @@ jobs:
       env:
         IFTTT_API_KEY: ${{ secrets.IFTTT_API_KEY }}
         RAPID_API_KEY: ${{ secrets.RAPID_API_KEY }}
+        SPORTSDATA_IO_API_KEY: ${{ secrets.SPORTSDATA_IO_API_KEY }}

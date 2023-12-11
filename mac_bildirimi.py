@@ -37,15 +37,18 @@ def get_todays_games():
     date = datetime.now().strftime('%Y-%m-%d')
     url = f"https://api.sportsdata.io/v3/soccer/scores/json/GamesByDate/{date}"
     headers = {
-        "key": os.environ['SPORTSDATA_IO_API_KEY']
+        "Ocp-Apim-Subscription-Key": os.environ['SPORTSDATA_IO_API_KEY']
     }
 
     response = requests.get(url, headers=headers)
-    
-    # Log the fixture data
-    print(f"Fixture obtained: {response.json()}")
-    
-    return response.json()
+
+    if response.status_code == 200:
+        # Log the fixture data
+        print(f"Fixture obtained: {response.json()}")
+        return response.json()
+    else:
+        print(f"Error fetching data: {response.text}")
+        return None  # Or appropriate error handling
 
 # Main execution
 fixtures = get_todays_games()

@@ -26,6 +26,10 @@ jobs:
     - name: Print environment variables (For Debugging)
       run: env
 
+    - name: Export Environment Variables
+      run: |
+        echo "SPORTSDATA_IO_API_KEY=${{ secrets.SPORTSDATA_IO_API_KEY }}" >> $GITHUB_ENV
+
     - name: Run the script
       run: python mac_bildirimi.py 
       env:

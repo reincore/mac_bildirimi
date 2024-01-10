@@ -42,7 +42,7 @@ def get_todays_games():
 def main():
     # Team ID, Name, and Venue mapping
     teams = {
-        572: ("Fenerbahçe", "Fenerhabçe Şükrü Saraçoğlu Stadyumu"),
+        572: ("Fenerbahçe", "Fenerbahçe Şükrü Saraçoğlu Stadyumu"),
         728: ("Beşiktaş", "Beşiktaş İnönü Stadyumu")
     }
 
